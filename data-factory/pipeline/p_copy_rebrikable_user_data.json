@@ -1,0 +1,166 @@
+{
+	"name": "p_copy_rebrikable_user_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "ac_copy_user_data",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "ac_get_user_token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_rebrikable_users_api",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_generic_rebrikable_user_data",
+						"type": "DatasetReference",
+						"parameters": {
+							"dataset": {
+								"value": "@pipeline().parameters.route_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "ac_get_user_token",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "ac_get_api_key",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ac_get_user_password",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
+							"type": "Expression"
+						}
+					},
+					"url": "https://rebrickable.com/api/v3/users/_token/",
+					"body": {
+						"value": "@json(concat('{\"username\": \"', pipeline().parameters.user_email, '\", \"password\": \"', activity('ac_get_user_password').output.value, '\"}'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ac_get_api_key",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-api-key?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "ac_get_user_password",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-user-password?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"user_route": {
+				"type": "string"
+			},
+			"route_name": {
+				"type": "string"
+			},
+			"user_email": {
+				"type": "string",
+				"defaultValue": "r.sarah@pucpr.edu.br"
+			}
+		},
+		"folder": {
+			"name": "Rebriklable"
+		},
+		"annotations": []
+	}
+}

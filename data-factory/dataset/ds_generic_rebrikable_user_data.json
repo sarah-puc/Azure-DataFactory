@@ -1,0 +1,27 @@
+{
+	"name": "ds_generic_rebrikable_user_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_sadp203dev",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dataset": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('Rebrickable/Users/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "raw"
+			}
+		},
+		"schema": {}
+	}
+}
