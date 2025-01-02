@@ -32,7 +32,7 @@ jobs:
 
     - name: Validate and Generate ARM template
       run: npm run build export ${{github.workspace}}/data-factory/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/rg-dp203-${{ vars.ENV }}/providers/Microsoft.DataFactory/factories/df-dp203-${{ vars.ENV }} "ADF-ARM-Template"  # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
-      working-directory: ${{github.workspace}}/data-factory/build
+      working-directory: ${{github.workspace}}/data-factory/build/ADF-ARM-Template
  
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
