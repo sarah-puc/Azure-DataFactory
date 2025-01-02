@@ -1,0 +1,17 @@
+{
+	"name": "ls_rebrickable_zipped",
+	"properties": {
+		"parameters": {
+			"dataset": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset)}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
