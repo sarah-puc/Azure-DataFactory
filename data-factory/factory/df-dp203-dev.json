@@ -1,0 +1,9 @@
+{
+	"name": "df-dp203-dev",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "4025bb6f-5ddc-406b-93e0-eb79fd5bd2af",
+		"tenantId": "8a1ef6c3-8324-4103-bf4a-1328c5dc3653"
+	}
+}
