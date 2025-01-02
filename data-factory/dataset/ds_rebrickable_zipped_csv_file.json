@@ -15,6 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().dataset,'.csv')",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@concat('Rebrickable/Lego/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
 					"type": "Expression"
