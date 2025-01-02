@@ -1,0 +1,20 @@
+{
+	"name": "ls_rebrickable_zipped_dataset",
+	"properties": {
+		"parameters": {
+			"dataset": {
+				"type": "string"
+			},
+			"extension": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset,linkedService().extension)}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
