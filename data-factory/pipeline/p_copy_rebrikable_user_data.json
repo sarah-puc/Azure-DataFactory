@@ -5,8 +5,6 @@
 			{
 				"name": "ac_copy_user_data",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ac_get_user_token",
@@ -30,7 +28,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "GET",
 						"paginationRules": {
-							"supportRFC5988": "true"
+							"AbsoluteUrl": "$"
 						}
 					},
 					"sink": {
@@ -49,6 +47,10 @@
 						"referenceName": "ds_rebrikable_users_api",
 						"type": "DatasetReference",
 						"parameters": {
+							"endpoint": {
+								"value": "@pipeline().parameters.user_route",
+								"type": "Expression"
+							},
 							"user_token": {
 								"value": "@activity('ac_get_user_token').output.user_token",
 								"type": "Expression"
@@ -62,7 +64,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"dataset": {
-								"value": "@pipeline().parameters.route_name",
+								"value": "@split(pipeline().parameters.user_route, '/')[0]",
 								"type": "Expression"
 							}
 						}
