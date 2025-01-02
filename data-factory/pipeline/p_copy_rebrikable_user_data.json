@@ -160,9 +160,6 @@
 			"user_route": {
 				"type": "string"
 			},
-			"route_name": {
-				"type": "string"
-			},
 			"user_email": {
 				"type": "string",
 				"defaultValue": "r.sarah@pucpr.edu.br"
