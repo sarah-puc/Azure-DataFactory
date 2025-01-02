@@ -55,21 +55,21 @@ jobs:
 
       # List the files in the current directory
       - name: List files in current directory
-        run: ls -R
+        run: cat ARMTemplateParametersForFactory.json
 
-      # - name: Login via Az module
-      #   uses: azure/login@v1
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      #     enable-AzPSSession: true       
-        
-      # - name: data-factory-deploy
-      #   uses: Azure/data-factory-deploy-action@v1.2.0
-      #   with:
-      #     resourceGroupName: rg-dp203-${{ vars.ENV }}
-      #     dataFactoryName: df-dp203-${{ vars.ENV }}
-      #     armTemplateFile: ARMTemplateADF.json
-          #armTemplateParametersFile: # (9) ARM template parameters file name ARMTemplateParametersForFactory.json
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true       
+
+      - name: data-factory-deploy
+        uses: Azure/data-factory-deploy-action@v1.2.0
+        with:
+          resourceGroupName: rg-dp203-${{ vars.ENV }}
+          dataFactoryName: df-dp203-${{ vars.ENV }}
+          armTemplateFile: ARMTemplateForFactory.json
+          armTemplateParametersFile: ARMTemplateParametersForFactory.json
           #additionalParameters: # (10) Parameters which will be replaced in the ARM template. Expected format 'key1=value key2=value keyN=value'. At the minimum here you should provide the target ADF name parameter. Check the ARMTemplateParametersForFactory.json file for all the parameters that are expected in your scenario
