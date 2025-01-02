@@ -1,0 +1,31 @@
+{
+	"name": "ds_generic_zipped_rebrickable_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_rebrickable_zipped_dataset",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dataset": {
+					"value": "@dataset().dataset",
+					"type": "Expression"
+				},
+				"extension": ".csv.gz"
+			}
+		},
+		"parameters": {
+			"dataset": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			},
+			"compression": {
+				"type": "gzip"
+			}
+		}
+	}
+}

@@ -15,13 +15,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": {
+				"folderPath": {
 					"value": "@concat('Rebrickable/Lego/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
 					"type": "Expression"
-				}
-			},
-			"compression": {
-				"type": "gzip"
+				},
+				"fileSystem": "raw"
 			}
 		}
 	}
