@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: "ADF-ARM-Template" # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/data-factory/build/ExportedArmTemplate
+        path: ${{github.workspace}}/data-factory/build
 
   release:
     needs: build
