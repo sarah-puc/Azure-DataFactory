@@ -4,12 +4,16 @@
 		"parameters": {
 			"dataset": {
 				"type": "string"
+			},
+			"extension": {
+				"type": "string",
+				"defaultValue": ".csv.gz"
 			}
 		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset)}",
+			"url": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset,linkedService().extension)}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
