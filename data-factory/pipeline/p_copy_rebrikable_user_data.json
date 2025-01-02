@@ -47,7 +47,13 @@
 				"inputs": [
 					{
 						"referenceName": "ds_rebrikable_users_api",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"user_token": {
+								"value": "@activity('ac_get_user_token').output.user_token",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
@@ -84,8 +90,8 @@
 					"timeout": "0.12:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
+					"secureOutput": true,
+					"secureInput": true
 				},
 				"userProperties": [],
 				"typeProperties": {
@@ -94,11 +100,13 @@
 						"Authorization": {
 							"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
 							"type": "Expression"
-						}
+						},
+						"Content-Type": "application/x-www-form-urlencoded",
+						"Accept": "application/json"
 					},
 					"url": "https://rebrickable.com/api/v3/users/_token/",
 					"body": {
-						"value": "@json(concat('{\"username\": \"', pipeline().parameters.user_email, '\", \"password\": \"', activity('ac_get_user_password').output.value, '\"}'))",
+						"value": "@concat('username=', pipeline().parameters.user_email, '&password=', activity('ac_get_user_password').output.value)",
 						"type": "Expression"
 					}
 				}

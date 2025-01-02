@@ -8,13 +8,16 @@
 		"parameters": {
 			"endpoint": {
 				"type": "string"
+			},
+			"user_token": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('/users/',dataset().endpoint)",
+				"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint)",
 				"type": "Expression"
 			}
 		},
