@@ -53,10 +53,6 @@ jobs:
         with:
           name: "ARMTemplateADF" # (5) Artifact name 
 
-      # List the files in the current directory
-      - name: List files in current directory
-        run: cat ARMTemplateParametersForFactory.json
-
       - name: Login via Az module
         uses: azure/login@v1
         with:
