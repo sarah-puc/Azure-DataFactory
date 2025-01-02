@@ -34,13 +34,14 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_generic_zipped_rebrickable_dataset",
+						"referenceName": "ds_generic_zipped_rebrickable_datasets",
 						"type": "DatasetReference",
 						"parameters": {
 							"dataset": {
 								"value": "@pipeline().parameters.dataset_name",
 								"type": "Expression"
-							}
+							},
+							"extension": ".csv.gz"
 						}
 					}
 				],

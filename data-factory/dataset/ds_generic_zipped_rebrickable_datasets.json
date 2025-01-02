@@ -1,5 +1,5 @@
 {
-	"name": "ds_generic_zipped_rebrickable_dataset",
+	"name": "ds_generic_zipped_rebrickable_datasets",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_rebrickable_zipped",
