@@ -36,7 +36,13 @@
 				"inputs": [
 					{
 						"referenceName": "ds_generic_zipped_rebrickable_dataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"dataset": {
+								"value": "@pipeline().parameters.dataset_name",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
