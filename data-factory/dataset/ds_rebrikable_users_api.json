@@ -17,7 +17,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint)",
+				"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint, '/')",
 				"type": "Expression"
 			}
 		},
