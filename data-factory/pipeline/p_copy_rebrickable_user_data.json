@@ -150,7 +150,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"endpoint": {
-											"value": "@pipeline().parameters.user_route",
+											"value": "@item()",
 											"type": "Expression"
 										},
 										"user_token": {
@@ -166,7 +166,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"dataset": {
-											"value": "@split(pipeline().parameters.user_route, '/')[0]",
+											"value": "@split(item(), '/')[0]",
 											"type": "Expression"
 										}
 									}
@@ -178,10 +178,6 @@
 			}
 		],
 		"parameters": {
-			"user_route": {
-				"type": "string",
-				"defaultValue": "minifigs"
-			},
 			"user_email": {
 				"type": "string",
 				"defaultValue": "r.sarah@pucpr.edu.br"
