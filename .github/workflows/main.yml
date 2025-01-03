@@ -87,13 +87,13 @@ jobs:
             client-id: ${{ secrets.AZURE_CLIENT_ID }}
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            enable-AzPSSession: true       
+            enable-AzPSSession: true    
 
         - name: check template
-          run: cat ARMTemplateParametersForFactory.json
+          run: ls -R *
 
         - name: check template pipe
-          run: cat ARMTemplateForFactory.json
+          run: ls -R ${{ github.workspace }}/.github/workflows
   
         # - name: data-factory-deploy
         #   uses: Azure/data-factory-deploy-action@v1.2.0
