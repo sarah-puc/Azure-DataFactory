@@ -33,8 +33,6 @@
 			{
 				"name": "ac_send_error_notification_users",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ac_execute_copy_api_pipeline",
@@ -63,8 +61,6 @@
 			{
 				"name": "ac_execute_copy_api_pipeline",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Failed",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -91,8 +87,6 @@
 			{
 				"name": "ac_execute_copy_download_dataset",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Failed",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
