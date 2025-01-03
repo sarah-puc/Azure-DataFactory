@@ -63,129 +63,113 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ac_set_desired_endpoints_users_api",
-						"type": "SetVariable",
-						"dependsOn": [],
+						"name": "ac_send_error_notification",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "ac_execute_copy_download_dataset",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
 						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "endpoints",
-							"value": {
-								"value": "@pipeline().parameters.endpoints",
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
+							"body": {
+								"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_download_dataset').output.message, '\"\n}'))",
 								"type": "Expression"
 							}
 						}
 					},
 					{
-						"name": "ac_for_each_user_endpoint",
-						"type": "ForEach",
+						"name": "ac_send_error_notification_users",
+						"type": "WebActivity",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "ac_set_desired_endpoints_users_api",
+								"activity": "ac_execute_copy_api_pipeline",
 								"dependencyConditions": [
-									"Succeeded"
+									"Failed"
 								]
 							}
 						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('endpoints')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "ac_execute_copy_api_pipeline",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "p_copy_rebrickable_user_data",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"user_route": {
-												"value": "@item()",
-												"type": "Expression"
-											},
-											"user_email": {
-												"value": "@pipeline().parameters.user",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "ac_set_desired_download_datasets",
-						"type": "SetVariable",
-						"dependsOn": [],
 						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "download_datasets",
-							"value": {
-								"value": "@pipeline().parameters.downloads",
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
+							"body": {
+								"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_api_pipeline').output.error.message, '\"\n}'))",
 								"type": "Expression"
 							}
 						}
 					},
 					{
-						"name": "ac_for_each_download_dataset",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "ac_set_desired_download_datasets",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"name": "ac_execute_copy_api_pipeline",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Failed",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
 						"userProperties": [],
 						"typeProperties": {
-							"items": {
-								"value": "@variables('download_datasets')",
-								"type": "Expression"
+							"pipeline": {
+								"referenceName": "p_copy_rebrickable_user_data",
+								"type": "PipelineReference"
 							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "ac_execute_copy_api_pipeline_copy1",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "p_copy_rebrickable_zipped_dataset",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"dataset_name": {
-												"value": "@item()",
-												"type": "Expression"
-											}
-										}
-									}
+							"waitOnCompletion": true,
+							"parameters": {
+								"user_email": {
+									"value": "@pipeline().parameters.user",
+									"type": "Expression"
+								},
+								"endpoints": {
+									"value": "@pipeline().parameters.endpoints",
+									"type": "Expression"
 								}
-							]
+							}
+						}
+					},
+					{
+						"name": "ac_execute_copy_download_dataset",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_copy_rebrickable_zipped_dataset",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"datasets": {
+									"value": "@pipeline().parameters.downloads",
+									"type": "Expression"
+								}
+							}
 						}
 					}
 				],
@@ -246,81 +230,6 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
-					{
-						"name": "ac_copy_user_data",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "ac_get_user_token",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": true
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RestSource",
-								"httpRequestTimeout": "00:01:40",
-								"requestInterval": "00.00:00:01.000",
-								"requestMethod": "GET",
-								"additionalHeaders": {
-									"Authorization": {
-										"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
-										"type": "Expression"
-									}
-								},
-								"paginationRules": {
-									"AbsoluteUrl": "$.next"
-								}
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_rebrickable_users_api",
-								"type": "DatasetReference",
-								"parameters": {
-									"endpoint": {
-										"value": "@pipeline().parameters.user_route",
-										"type": "Expression"
-									},
-									"user_token": {
-										"value": "@activity('ac_get_user_token').output.user_token",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_generic_rebrickable_user_data",
-								"type": "DatasetReference",
-								"parameters": {
-									"dataset": {
-										"value": "@split(pipeline().parameters.user_route, '/')[0]",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
 					{
 						"name": "ac_get_user_token",
 						"type": "WebActivity",
@@ -406,19 +315,115 @@
 								"resource": "https://vault.azure.net"
 							}
 						}
+					},
+					{
+						"name": "ac_for_each_user_endpoint",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ac_get_user_token",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.endpoints",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ac_copy_user_data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": true
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:01.000",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Authorization": {
+													"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"AbsoluteUrl": "$.next"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_rebrickable_users_api",
+											"type": "DatasetReference",
+											"parameters": {
+												"endpoint": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"user_token": {
+													"value": "@activity('ac_get_user_token').output.user_token",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_generic_rebrickable_user_data",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataset": {
+													"value": "@split(item(), '/')[0]",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"user_route": {
-						"type": "string",
-						"defaultValue": "minifigs"
-					},
 					"user_email": {
 						"type": "string",
 						"defaultValue": "r.sarah@pucpr.edu.br"
+					},
+					"endpoints": {
+						"type": "array",
+						"defaultValue": [
+							"minifigs",
+							"partlists",
+							"profile",
+							"parts",
+							"setlists"
+						]
 					}
 				},
 				"variables": {
@@ -446,68 +451,94 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ac_copy_zipped_content",
-						"type": "Copy",
+						"name": "ac_for_each_download_dataset",
+						"type": "ForEach",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
+							"items": {
+								"value": "@pipeline().parameters.datasets",
+								"type": "Expression"
 							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ac_copy_zipped_content",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_generic_zipped_rebrickable_dataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataset": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_rebrickable_zipped_csv_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"dataset": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_generic_zipped_rebrickable_dataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"dataset": {
-										"value": "@pipeline().parameters.dataset_name",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_rebrickable_zipped_csv_file",
-								"type": "DatasetReference",
-								"parameters": {
-									"dataset": {
-										"value": "@pipeline().parameters.dataset_name",
-										"type": "Expression"
-									}
-								}
-							}
-						]
+							]
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"dataset_name": {
-						"type": "string"
+					"datasets": {
+						"type": "array",
+						"defaultValue": [
+							"themes",
+							"colors",
+							"part_categories",
+							"parts",
+							"part_relationships",
+							"elements",
+							"sets",
+							"minifigs",
+							"inventories"
+						]
 					}
 				},
 				"variables": {
