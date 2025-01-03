@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ac_set_desired_endpoints",
+				"name": "ac_set_desired_endpoints_users_api",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -20,11 +20,11 @@
 				}
 			},
 			{
-				"name": "ac_for_each_endpoint",
+				"name": "ac_for_each_user_endpoint",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "ac_set_desired_endpoints",
+						"activity": "ac_set_desired_endpoints_users_api",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -36,6 +36,7 @@
 						"value": "@variables('endpoints')",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "ac_execute_copy_api_pipeline",
