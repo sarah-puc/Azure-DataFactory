@@ -15,6 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().dataset",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@concat('Rebrickable/Users/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
 					"type": "Expression"

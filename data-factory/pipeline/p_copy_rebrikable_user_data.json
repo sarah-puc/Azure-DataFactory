@@ -5,11 +5,9 @@
 			{
 				"name": "ac_copy_user_data",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "ac_set_endpoint",
+						"activity": "ac_get_user_token",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -20,7 +18,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
-					"secureInput": false
+					"secureInput": true
 				},
 				"userProperties": [],
 				"typeProperties": {
@@ -100,7 +98,7 @@
 					"timeout": "0.12:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
+					"secureOutput": true,
 					"secureInput": true
 				},
 				"userProperties": [],
@@ -162,35 +160,12 @@
 						"resource": "https://vault.azure.net"
 					}
 				}
-			},
-			{
-				"name": "ac_set_endpoint",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "ac_get_user_token",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "endpoint",
-					"value": {
-						"value": "@concat('/users/',activity('ac_get_user_token').output.user_token,'/', pipeline().parameters.user_route)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
 			"user_route": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "minifigs"
 			},
 			"user_email": {
 				"type": "string",
