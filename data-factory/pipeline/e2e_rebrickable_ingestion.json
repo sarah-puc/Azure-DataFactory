@@ -66,6 +66,67 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "ac_set_desired_download_datasets",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "download_datasets",
+					"value": {
+						"value": "@pipeline().parameters.downloads",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ac_for_each_download_dataset",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ac_set_desired_download_datasets",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('download_datasets')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "ac_execute_copy_api_pipeline_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "p_copy_rebrickable_zipped_dataset",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"dataset_name": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -82,10 +143,27 @@
 			"user": {
 				"type": "string",
 				"defaultValue": "r.sarah@pucpr.edu.br"
+			},
+			"downloads": {
+				"type": "array",
+				"defaultValue": [
+					"themes",
+					"colors",
+					"part_categories",
+					"parts",
+					"part_relationships",
+					"elements",
+					"sets",
+					"minifigs",
+					"inventories"
+				]
 			}
 		},
 		"variables": {
 			"endpoints": {
+				"type": "Array"
+			},
+			"download_datasets": {
 				"type": "Array"
 			}
 		},
