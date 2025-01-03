@@ -23,6 +23,34 @@
 			"type": "string",
 			"defaultValue": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
 		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints": {
+			"type": "array",
+			"defaultValue": [
+				"minifigs",
+				"partlists",
+				"profile",
+				"parts",
+				"setlists"
+			]
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user": {
+			"type": "string",
+			"defaultValue": "r.sarah@pucpr.edu.br"
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads": {
+			"type": "array",
+			"defaultValue": [
+				"themes",
+				"colors",
+				"part_categories",
+				"parts",
+				"part_relationships",
+				"elements",
+				"sets",
+				"minifigs",
+				"inventories"
+			]
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -61,6 +89,15 @@
 					},
 					"ls_rebriklable_api_properties_typeProperties_url": {
 						"value": "[parameters('ls_rebriklable_api_properties_typeProperties_url')]"
+					},
+					"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints": {
+						"value": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints')]"
+					},
+					"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user": {
+						"value": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user')]"
+					},
+					"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads": {
+						"value": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads')]"
 					}
 				}
 			},

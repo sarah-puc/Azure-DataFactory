@@ -22,6 +22,34 @@
 		"ls_rebriklable_api_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints": {
+			"type": "array",
+			"defaultValue": [
+				"minifigs",
+				"partlists",
+				"profile",
+				"parts",
+				"setlists"
+			]
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user": {
+			"type": "string",
+			"defaultValue": "r.sarah@pucpr.edu.br"
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads": {
+			"type": "array",
+			"defaultValue": [
+				"themes",
+				"colors",
+				"part_categories",
+				"parts",
+				"part_relationships",
+				"elements",
+				"sets",
+				"minifigs",
+				"inventories"
+			]
 		}
 	},
 	"variables": {
@@ -703,6 +731,48 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/p_copy_rebrickable_user_data')]",
 				"[concat(variables('factoryId'), '/pipelines/p_copy_rebrickable_zipped_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tg_rebrickable_daily_7')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "e2e_rebrickable_ingestion",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"endpoints": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints')]",
+							"user": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user')]",
+							"downloads": "[parameters('tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-01-03T15:11:00",
+						"timeZone": "E. South America Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								7
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/e2e_rebrickable_ingestion')]"
 			]
 		}
 	]

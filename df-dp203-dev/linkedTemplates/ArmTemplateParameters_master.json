@@ -17,6 +17,31 @@
 		"ls_rebriklable_api_properties_typeProperties_url": {
 			"value": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
 		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints": {
+			"value": [
+				"minifigs",
+				"partlists",
+				"profile",
+				"parts",
+				"setlists"
+			]
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user": {
+			"value": "r.sarah@pucpr.edu.br"
+		},
+		"tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads": {
+			"value": [
+				"themes",
+				"colors",
+				"part_categories",
+				"parts",
+				"part_relationships",
+				"elements",
+				"sets",
+				"minifigs",
+				"inventories"
+			]
+		},
 		"containerUri": {
 			"value": ""
 		},
