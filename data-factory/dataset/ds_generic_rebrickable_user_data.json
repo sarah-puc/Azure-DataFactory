@@ -1,5 +1,5 @@
 {
-	"name": "ds_generic_rebrikable_user_data",
+	"name": "ds_generic_rebrickable_user_data",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_adls_sadp203dev",

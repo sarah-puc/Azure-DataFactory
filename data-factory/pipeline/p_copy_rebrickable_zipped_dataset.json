@@ -67,10 +67,13 @@
 		"variables": {
 			"test": {
 				"type": "String"
+			},
+			"endpoint": {
+				"type": "String"
 			}
 		},
 		"folder": {
-			"name": "Rebriklable"
+			"name": "Rebrickable"
 		},
 		"annotations": []
 	}

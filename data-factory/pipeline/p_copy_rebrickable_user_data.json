@@ -1,5 +1,5 @@
 {
-	"name": "p_copy_rebrikable_user_data",
+	"name": "p_copy_rebrickable_user_data",
 	"properties": {
 		"activities": [
 			{
@@ -50,7 +50,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_rebrikable_users_api",
+						"referenceName": "ds_rebrickable_users_api",
 						"type": "DatasetReference",
 						"parameters": {
 							"endpoint": {
@@ -66,7 +66,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "ds_generic_rebrikable_user_data",
+						"referenceName": "ds_generic_rebrickable_user_data",
 						"type": "DatasetReference",
 						"parameters": {
 							"dataset": {
@@ -181,7 +181,7 @@
 			}
 		},
 		"folder": {
-			"name": "Rebriklable"
+			"name": "Rebrickable"
 		},
 		"annotations": []
 	}

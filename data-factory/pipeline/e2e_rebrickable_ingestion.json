@@ -1,0 +1,57 @@
+{
+	"name": "e2e_rebrickable_ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "ac_set_desired_endpoints",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "endpoints",
+					"value": {
+						"value": "@pipeline().parameters.endpoints",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ac_for_each_endpoint",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ac_set_desired_endpoints",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('endpoints')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"endpoints": {
+				"type": "array"
+			}
+		},
+		"variables": {
+			"endpoints": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Rebrickable"
+		},
+		"annotations": []
+	}
+}
