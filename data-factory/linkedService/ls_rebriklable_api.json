@@ -1,10 +1,15 @@
 {
 	"name": "ls_rebriklable_api",
 	"properties": {
+		"parameters": {
+			"endpoint": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://rebrickable.com/api/v3",
+			"url": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
