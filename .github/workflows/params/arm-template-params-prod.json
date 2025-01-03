@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "value": "df-dp203-prod"
+        },
+        "ls_adls_sadp203dev_properties_typeProperties_url": {
+            "value": "https://sadp203prod.dfs.core.windows.net/"
+        },
+        "ls_akv_dp_203_dev_properties_typeProperties_baseUrl": {
+            "value": "https://kv-dp-203-prod.vault.azure.net/"
+        },
+        "ls_rebrickable_zipped_dataset_properties_typeProperties_url": {
+            "value": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset,linkedService().extension)}"
+        },
+        "ls_rebriklable_api_properties_typeProperties_url": {
+            "value": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
+        },
+        "tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_endpoints": {
+            "value": [
+                "minifigs",
+                "partlists",
+                "profile",
+                "parts",
+                "setlists"
+            ]
+        },
+        "tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_user": {
+            "value": "r.sarah@pucpr.edu.br"
+        },
+        "tg_rebrickable_daily_7_properties_e2e_rebrickable_ingestion_parameters_downloads": {
+            "value": [
+                "themes",
+                "colors",
+                "part_categories",
+                "parts",
+                "part_relationships",
+                "elements",
+                "sets",
+                "minifigs",
+                "inventories"
+            ]
+        }
+    }
+}
