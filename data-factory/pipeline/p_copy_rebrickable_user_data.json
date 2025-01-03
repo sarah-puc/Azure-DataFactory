@@ -3,81 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ac_copy_user_data",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "ac_get_user_token",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": true
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:01.000",
-						"requestMethod": "GET",
-						"additionalHeaders": {
-							"Authorization": {
-								"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
-								"type": "Expression"
-							}
-						},
-						"paginationRules": {
-							"AbsoluteUrl": "$.next"
-						}
-					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_rebrickable_users_api",
-						"type": "DatasetReference",
-						"parameters": {
-							"endpoint": {
-								"value": "@pipeline().parameters.user_route",
-								"type": "Expression"
-							},
-							"user_token": {
-								"value": "@activity('ac_get_user_token').output.user_token",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_generic_rebrickable_user_data",
-						"type": "DatasetReference",
-						"parameters": {
-							"dataset": {
-								"value": "@split(pipeline().parameters.user_route, '/')[0]",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
 				"name": "ac_get_user_token",
 				"type": "WebActivity",
 				"dependsOn": [
@@ -160,6 +85,96 @@
 						"resource": "https://vault.azure.net"
 					}
 				}
+			},
+			{
+				"name": "ac_for_each_user_endpoint",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ac_get_user_token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.endpoints",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "ac_copy_user_data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": true
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:01.000",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"AbsoluteUrl": "$.next"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_rebrickable_users_api",
+									"type": "DatasetReference",
+									"parameters": {
+										"endpoint": {
+											"value": "@pipeline().parameters.user_route",
+											"type": "Expression"
+										},
+										"user_token": {
+											"value": "@activity('ac_get_user_token').output.user_token",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_generic_rebrickable_user_data",
+									"type": "DatasetReference",
+									"parameters": {
+										"dataset": {
+											"value": "@split(pipeline().parameters.user_route, '/')[0]",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -170,6 +185,9 @@
 			"user_email": {
 				"type": "string",
 				"defaultValue": "r.sarah@pucpr.edu.br"
+			},
+			"endpoints": {
+				"type": "array"
 			}
 		},
 		"variables": {
