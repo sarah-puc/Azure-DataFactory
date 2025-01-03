@@ -3,7 +3,13 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_rebriklable_api",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"endpoint": {
+					"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint)",
+					"type": "Expression"
+				}
+			}
 		},
 		"parameters": {
 			"endpoint": {
@@ -15,12 +21,6 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
-		"typeProperties": {
-			"relativeUrl": {
-				"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint, '/')",
-				"type": "Expression"
-			}
-		},
 		"schema": []
 	}
 }
