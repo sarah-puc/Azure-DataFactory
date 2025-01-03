@@ -1,0 +1,70 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-dp203-dev"
+		},
+		"ls_adls_sadp203dev_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sadp203dev.dfs.core.windows.net/"
+		},
+		"ls_akv_dp_203_dev_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-dp-203-dev.vault.azure.net/"
+		},
+		"ls_rebrickable_zipped_dataset_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset,linkedService().extension)}"
+		},
+		"ls_rebriklable_api_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "df-dp203-dev_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ls_adls_sadp203dev_properties_typeProperties_url": {
+						"value": "[parameters('ls_adls_sadp203dev_properties_typeProperties_url')]"
+					},
+					"ls_akv_dp_203_dev_properties_typeProperties_baseUrl": {
+						"value": "[parameters('ls_akv_dp_203_dev_properties_typeProperties_baseUrl')]"
+					},
+					"ls_rebrickable_zipped_dataset_properties_typeProperties_url": {
+						"value": "[parameters('ls_rebrickable_zipped_dataset_properties_typeProperties_url')]"
+					},
+					"ls_rebriklable_api_properties_typeProperties_url": {
+						"value": "[parameters('ls_rebriklable_api_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

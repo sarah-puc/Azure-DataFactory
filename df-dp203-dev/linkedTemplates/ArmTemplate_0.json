@@ -1,0 +1,709 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-dp203-dev"
+		},
+		"ls_adls_sadp203dev_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sadp203dev.dfs.core.windows.net/"
+		},
+		"ls_akv_dp_203_dev_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-dp-203-dev.vault.azure.net/"
+		},
+		"ls_rebrickable_zipped_dataset_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://cdn.rebrickable.com/media/downloads/',linkedService().dataset,linkedService().extension)}"
+		},
+		"ls_rebriklable_api_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://rebrickable.com/api/v3', linkedService().endpoint)}"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_adls_sadp203dev')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_adls_sadp203dev_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_akv_dp_203_dev')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('ls_akv_dp_203_dev_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_rebrickable_zipped_dataset')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"dataset": {
+						"type": "string"
+					},
+					"extension": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('ls_rebrickable_zipped_dataset_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_rebriklable_api')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"endpoint": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('ls_rebriklable_api_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_generic_rebrickable_user_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_sadp203dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dataset": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().dataset, '.json')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('Rebrickable/Users/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_sadp203dev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_generic_zipped_rebrickable_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_rebrickable_zipped_dataset",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"dataset": {
+							"value": "@dataset().dataset",
+							"type": "Expression"
+						},
+						"extension": ".csv.gz"
+					}
+				},
+				"parameters": {
+					"dataset": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					},
+					"compression": {
+						"type": "gzip"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_rebrickable_zipped_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_rebrickable_users_api')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_rebriklable_api",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"endpoint": {
+							"value": "@concat('/users/',dataset().user_token,'/',dataset().endpoint)",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"endpoint": {
+						"type": "string"
+					},
+					"user_token": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_rebriklable_api')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_rebrickable_zipped_csv_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_sadp203dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dataset": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().dataset,'.csv')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('Rebrickable/Lego/',dataset().dataset,'/',formatDateTime(utcNow(),'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_sadp203dev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_copy_rebrickable_user_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ac_copy_user_data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "ac_get_user_token",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": true
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:01.000",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Authorization": {
+										"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_rebrickable_users_api",
+								"type": "DatasetReference",
+								"parameters": {
+									"endpoint": {
+										"value": "@pipeline().parameters.user_route",
+										"type": "Expression"
+									},
+									"user_token": {
+										"value": "@activity('ac_get_user_token').output.user_token",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_generic_rebrickable_user_data",
+								"type": "DatasetReference",
+								"parameters": {
+									"dataset": {
+										"value": "@split(pipeline().parameters.user_route, '/')[0]",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "ac_get_user_token",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "ac_get_api_key",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ac_get_user_password",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": true,
+							"secureInput": true
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Authorization": {
+									"value": "@concat('key ', trim(activity('ac_get_api_key').output.value))",
+									"type": "Expression"
+								},
+								"Content-Type": "application/x-www-form-urlencoded",
+								"Accept": "application/json"
+							},
+							"url": "https://rebrickable.com/api/v3/users/_token/",
+							"body": {
+								"value": "@concat('username=', pipeline().parameters.user_email, '&password=', activity('ac_get_user_password').output.value)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ac_get_api_key",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": true,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-api-key?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "ac_get_user_password",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": true,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-user-password?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"user_route": {
+						"type": "string",
+						"defaultValue": "minifigs"
+					},
+					"user_email": {
+						"type": "string",
+						"defaultValue": "r.sarah@pucpr.edu.br"
+					}
+				},
+				"variables": {
+					"test": {
+						"type": "String"
+					},
+					"endpoint": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Rebrickable"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_rebrickable_users_api')]",
+				"[concat(variables('factoryId'), '/datasets/ds_generic_rebrickable_user_data')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_copy_rebrickable_zipped_dataset')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ac_copy_zipped_content",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_generic_zipped_rebrickable_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"dataset": {
+										"value": "@pipeline().parameters.dataset_name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_rebrickable_zipped_csv_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"dataset": {
+										"value": "@pipeline().parameters.dataset_name",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dataset_name": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"endpoint": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Rebrickable"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_generic_zipped_rebrickable_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/ds_rebrickable_zipped_csv_file')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/e2e_rebrickable_ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ac_set_desired_endpoints_users_api",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "endpoints",
+							"value": {
+								"value": "@pipeline().parameters.endpoints",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ac_for_each_user_endpoint",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ac_set_desired_endpoints_users_api",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('endpoints')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ac_execute_copy_api_pipeline",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_copy_rebrickable_user_data",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"user_route": {
+												"value": "@item()",
+												"type": "Expression"
+											},
+											"user_email": {
+												"value": "@pipeline().parameters.user",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "ac_set_desired_download_datasets",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "download_datasets",
+							"value": {
+								"value": "@pipeline().parameters.downloads",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ac_for_each_download_dataset",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ac_set_desired_download_datasets",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('download_datasets')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ac_execute_copy_api_pipeline_copy1",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_copy_rebrickable_zipped_dataset",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"dataset_name": {
+												"value": "@item()",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"endpoints": {
+						"type": "array",
+						"defaultValue": [
+							"minifigs",
+							"partlists",
+							"profile",
+							"parts",
+							"setlists"
+						]
+					},
+					"user": {
+						"type": "string",
+						"defaultValue": "r.sarah@pucpr.edu.br"
+					},
+					"downloads": {
+						"type": "array",
+						"defaultValue": [
+							"themes",
+							"colors",
+							"part_categories",
+							"parts",
+							"part_relationships",
+							"elements",
+							"sets",
+							"minifigs",
+							"inventories"
+						]
+					}
+				},
+				"variables": {
+					"endpoints": {
+						"type": "Array"
+					},
+					"download_datasets": {
+						"type": "Array"
+					}
+				},
+				"folder": {
+					"name": "Rebrickable"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_copy_rebrickable_user_data')]",
+				"[concat(variables('factoryId'), '/pipelines/p_copy_rebrickable_zipped_dataset')]"
+			]
+		}
+	]
+}
