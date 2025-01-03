@@ -3,65 +3,91 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ac_copy_zipped_content",
-				"type": "Copy",
+				"name": "ac_for_each_download_dataset",
+				"type": "ForEach",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "HttpReadSettings",
-							"requestMethod": "GET"
-						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
-						}
+					"items": {
+						"value": "@pipeline().parameters.datasets",
+						"type": "Expression"
 					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "ac_copy_zipped_content",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_generic_zipped_rebrickable_dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"dataset": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_rebrickable_zipped_csv_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"dataset": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_generic_zipped_rebrickable_dataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"dataset": {
-								"value": "@pipeline().parameters.dataset_name",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_rebrickable_zipped_csv_file",
-						"type": "DatasetReference",
-						"parameters": {
-							"dataset": {
-								"value": "@pipeline().parameters.dataset_name",
-								"type": "Expression"
-							}
-						}
-					}
-				]
+					]
+				}
 			}
 		],
 		"parameters": {
-			"dataset_name": {
-				"type": "string"
+			"datasets": {
+				"type": "array",
+				"defaultValue": [
+					"themes",
+					"colors",
+					"part_categories",
+					"parts",
+					"part_relationships",
+					"elements",
+					"sets",
+					"minifigs",
+					"inventories"
+				]
 			}
 		},
 		"variables": {
