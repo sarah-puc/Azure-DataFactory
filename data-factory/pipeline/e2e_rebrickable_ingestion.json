@@ -104,7 +104,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "ac_execute_copy_api_pipeline_copy1",
+							"name": "ac_execute_copy_download_dataset",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
