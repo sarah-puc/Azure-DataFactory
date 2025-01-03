@@ -1,0 +1,53 @@
+{
+	"name": "tg_rebrickable_daily_7",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "e2e_rebrickable_ingestion",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"endpoints": [
+						"minifigs",
+						"partlists",
+						"profile",
+						"parts",
+						"setlists"
+					],
+					"user": "r.sarah@pucpr.edu.br",
+					"downloads": [
+						"themes",
+						"colors",
+						"part_categories",
+						"parts",
+						"part_relationships",
+						"elements",
+						"sets",
+						"minifigs",
+						"inventories"
+					]
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-01-03T15:11:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}
