@@ -183,7 +183,14 @@
 				"defaultValue": "r.sarah@pucpr.edu.br"
 			},
 			"endpoints": {
-				"type": "array"
+				"type": "array",
+				"defaultValue": [
+					"minifigs",
+					"partlists",
+					"profile",
+					"parts",
+					"setlists"
+				]
 			}
 		},
 		"variables": {
