@@ -87,6 +87,8 @@
 			{
 				"name": "ac_for_each_download_dataset",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Failed",
 				"dependsOn": [
 					{
 						"activity": "ac_set_desired_download_datasets",
