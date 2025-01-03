@@ -69,7 +69,14 @@
 		],
 		"parameters": {
 			"endpoints": {
-				"type": "array"
+				"type": "array",
+				"defaultValue": [
+					"minifigs",
+					"partlists",
+					"profile",
+					"parts",
+					"setlists"
+				]
 			},
 			"user": {
 				"type": "string",
