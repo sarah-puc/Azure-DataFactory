@@ -70,14 +70,7 @@
 			{
 				"name": "ac_set_desired_download_datasets",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "ac_for_each_user_endpoint",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -142,8 +135,7 @@
 					{
 						"activity": "ac_for_each_download_dataset",
 						"dependencyConditions": [
-							"Failed",
-							"Skipped"
+							"Failed"
 						]
 					}
 				],
@@ -159,14 +151,14 @@
 					"method": "POST",
 					"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
 					"body": {
-						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', if(equals(variables('error_message'), ''), activity('ac_execute_copy_download_dataset').output.error.message, variables('error_message')), '\"\n}'))",
+						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_download_dataset').output.error.message, '\"\n}'))",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "ac_set_error_message",
-				"type": "SetVariable",
+				"name": "ac_send_error_notification_users",
+				"type": "WebActivity",
 				"dependsOn": [
 					{
 						"activity": "ac_for_each_user_endpoint",
@@ -176,14 +168,18 @@
 					}
 				],
 				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "error_message",
-					"value": {
-						"value": "@activity('ac_execute_copy_api_pipeline').output.error.message",
+					"method": "POST",
+					"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
+					"body": {
+						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_api_pipeline').output.error.message, '\"\n}'))",
 						"type": "Expression"
 					}
 				}
@@ -225,9 +221,6 @@
 			},
 			"download_datasets": {
 				"type": "Array"
-			},
-			"error_message": {
-				"type": "String"
 			}
 		},
 		"folder": {
