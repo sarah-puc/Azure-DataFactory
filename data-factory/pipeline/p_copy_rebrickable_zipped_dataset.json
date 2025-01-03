@@ -65,9 +65,6 @@
 			}
 		},
 		"variables": {
-			"test": {
-				"type": "String"
-			},
 			"endpoint": {
 				"type": "String"
 			}
