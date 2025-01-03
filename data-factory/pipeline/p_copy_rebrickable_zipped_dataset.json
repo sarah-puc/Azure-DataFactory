@@ -64,6 +64,14 @@
 				"type": "string"
 			}
 		},
+		"variables": {
+			"test": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Rebriklable"
+		},
 		"annotations": []
 	}
 }
