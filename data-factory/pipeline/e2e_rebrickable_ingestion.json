@@ -23,7 +23,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "POST",
-					"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
+					"url": {
+						"value": "@pipeline().parameters.logic_app_endpoint",
+						"type": "Expression"
+					},
 					"body": {
 						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_download_dataset').output.message, '\"\n}'))",
 						"type": "Expression"
@@ -51,7 +54,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "POST",
-					"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
+					"url": {
+						"value": "@pipeline().parameters.logic_app_endpoint",
+						"type": "Expression"
+					},
 					"body": {
 						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', activity('ac_execute_copy_api_pipeline').output.error.message, '\"\n}'))",
 						"type": "Expression"
@@ -135,6 +141,10 @@
 					"minifigs",
 					"inventories"
 				]
+			},
+			"logic_app_endpoint": {
+				"type": "string",
+				"defaultValue": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0"
 			}
 		},
 		"variables": {
@@ -148,6 +158,8 @@
 		"folder": {
 			"name": "Rebrickable"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2025-01-03T19:22:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
