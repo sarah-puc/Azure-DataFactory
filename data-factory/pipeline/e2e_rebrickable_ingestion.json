@@ -35,13 +35,45 @@
 					"items": {
 						"value": "@variables('endpoints')",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "ac_execute_copy_api_pipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "p_copy_rebrickable_user_data",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"user_route": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"user_email": {
+										"value": "@pipeline().parameters.user",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
 				}
 			}
 		],
 		"parameters": {
 			"endpoints": {
 				"type": "array"
+			},
+			"user": {
+				"type": "string",
+				"defaultValue": "r.sarah@pucpr.edu.br"
 			}
 		},
 		"variables": {
