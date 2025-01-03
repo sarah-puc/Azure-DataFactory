@@ -159,7 +159,7 @@
 					"method": "POST",
 					"url": "https://prod-42.eastus.logic.azure.com:443/workflows/631649bfb2d347d7ae33d9bdfdc0b17b/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=1TGB3UdyHMDlJucAMFJKnkmbD4LNvdYlQUh70inL-V0",
 					"body": {
-						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"',,'\"\n}'))",
+						"value": "@json(concat('{\n    \"pipeline_name\": \"', pipeline().Pipeline,'\",\n    \"pipeline_run_id\": \"', pipeline().RunId,'\",\n    \"error_message\": \"', if(equals(variables('error_message'), ''), activity('ac_execute_copy_download_dataset').output.error.message, variables('error_message')), '\"\n}'))",
 						"type": "Expression"
 					}
 				}
@@ -182,7 +182,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "error_message",
-					"value": ""
+					"value": {
+						"value": "@activity('ac_execute_copy_api_pipeline').output.error.message",
+						"type": "Expression"
+					}
 				}
 			}
 		],
