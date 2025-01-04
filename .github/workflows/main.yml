@@ -76,33 +76,27 @@ jobs:
       runs-on: ubuntu-latest
       steps:
 
-        # - name: Checkout repository
-        #   uses: actions/checkout@v2
+        - name: Checkout repository
+          uses: actions/checkout@v2
       
         - name: Download a Build Artifact
           uses: actions/download-artifact@v3.0.2
           with:
             name: "ARMTemplateADF" # (5) Artifact name 
-
-        - name: template
-          run: cat df-dp203-dev_GlobalParameters.json && cat GlobalParametersUpdateScript.ps1
-
-        - name: template for params
-          run: cat ARMTemplateParametersForFactory.json && ls -R *
   
-        # - name: Login via Az module
-        #   uses: azure/login@v1
-        #   with:
-        #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        #     enable-AzPSSession: true    
+        - name: Login via Az module
+          uses: azure/login@v1
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            enable-AzPSSession: true    
 
-        # - name: data-factory-deploy
-        #   uses: Azure/data-factory-deploy-action@v1.2.0
-        #   with:
-        #     resourceGroupName: rg-dp203-${{ vars.ENV }}
-        #     dataFactoryName: df-dp203-${{ vars.ENV }}
-        #     armTemplateFile: ARMTemplateForFactory.json
-        #     armTemplateParametersFile: .github/workflows/params/arm-template-params-prod.json
+        - name: data-factory-deploy
+          uses: Azure/data-factory-deploy-action@v1.2.0
+          with:
+            resourceGroupName: rg-dp203-${{ vars.ENV }}
+            dataFactoryName: df-dp203-${{ vars.ENV }}
+            armTemplateFile: ARMTemplateForFactory.json
+            armTemplateParametersFile: .github/workflows/params/arm-template-params-prod.json
         #     #additionalParameters: # (10) Parameters which will be replaced in the ARM template. Expected format 'key1=value key2=value keyN=value'. At the minimum here you should provide the target ADF name parameter. Check the ARMTemplateParametersForFactory.json file for all the parameters that are expected in your scenario
