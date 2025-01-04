@@ -58,7 +58,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-api-key?api-version=7.0",
+					"url": {
+						"value": "@concat('https://kv-dp-203-',pipeline().globalParameters.environment,'.vault.azure.net/secrets/rebriklable-api-key?api-version=7.0')",
+						"type": "Expression"
+					},
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
@@ -79,7 +82,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://kv-dp-203-dev.vault.azure.net/secrets/rebriklable-user-password?api-version=7.0",
+					"url": {
+						"value": "@concat('https://kv-dp-203-',pipeline().globalParameters.environment,'.vault.azure.net/secrets/rebriklable-user-password?api-version=7.0')",
+						"type": "Expression"
+					},
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
