@@ -2,7 +2,7 @@
 	"name": "tg_rebrickable_daily_7",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
