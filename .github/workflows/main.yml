@@ -85,7 +85,7 @@ jobs:
             name: "ARMTemplateADF" # (5) Artifact name 
 
         - name: template
-          run: cat ARMTemplateForFactory.json
+          run: cat df-dp203-dev_GlobalParameters.json && cat GlobalParametersUpdateScript.ps1
 
         - name: template for params
           run: cat ARMTemplateParametersForFactory.json && ls -R *
