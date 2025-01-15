@@ -50,6 +50,7 @@
 				"     store: 'synapseanalytics',",
 				"     schemaName: 'Rebrikable',",
 				"     tableName: 'T_DIM_LEGO_SETS',",
+				"     preSQLs:['TRUNCATE TABLE Rebrikable.T_DIM_LEGO_SETS;'],",
 				"     insertable: true,",
 				"     updateable: false,",
 				"     deletable: false,",
